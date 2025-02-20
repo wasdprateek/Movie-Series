@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		305C78162D66E3CA0044E5E2 /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 305C78142D66E3C00044E5E2 /* ReadMe.txt */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		30F5164D2D66724C007D16CD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -17,6 +21,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		305C78142D66E3C00044E5E2 /* ReadMe.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		30F516192D65B86F007D16CD /* MovieSeries.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieSeries.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30F516492D66724C007D16CD /* MovieSeriesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieSeriesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -55,6 +60,7 @@
 		30F516102D65B86F007D16CD = {
 			isa = PBXGroup;
 			children = (
+				305C78142D66E3C00044E5E2 /* ReadMe.txt */,
 				30F5161B2D65B86F007D16CD /* Movie & Series */,
 				30F5164A2D66724C007D16CD /* MovieSeriesTests */,
 				30F5161A2D65B86F007D16CD /* Products */,
@@ -162,6 +168,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				305C78162D66E3CA0044E5E2 /* ReadMe.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
