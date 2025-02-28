@@ -6,6 +6,7 @@
 //
 
 // MARK: - Models
+import SwiftUI
 
 struct Title: Identifiable, Decodable {
     let id: Int
@@ -27,4 +28,16 @@ struct TitleDetails: Identifiable, Decodable {
     let genres: [Int]?
     let genre_names: [String]?
     let release_date: String?
+}
+
+struct Region: Decodable, Hashable{
+    let country : String
+    let name : String
+    let flag : String
+}
+
+enum MultiMediType : String, Hashable{
+    case movies = "Movies"
+    case tvSeries = "Tv Shows"
+    case region = "Regions"
 }

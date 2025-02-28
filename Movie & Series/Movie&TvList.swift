@@ -16,13 +16,14 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Picker("Type", selection: $viewModel.isMovies) {
-                    Text("Movies").tag(true)
-                    Text("TV Shows").tag(false)
+                Picker("Type", selection: $viewModel.multiMediaType) {
+                    Text("Movies").tag(MultiMediType.movies)
+                    Text("TV Shows").tag(MultiMediType.tvSeries)
+                    Text("Region").tag(MultiMediType.region)
                 }
                 .pickerStyle(.segmented)
                 .padding()
-                .onChange(of: viewModel.isMovies) {
+                .onChange(of: viewModel.multiMediaType) {
 //                    viewModel.fetchTitles() // Refetch data on toggle change
                 }
                 
@@ -32,7 +33,7 @@ struct HomeView: View {
                     TitleView(viewModel: viewModel)
                 }
             }
-            .navigationTitle("Movies & TvSeries")
+            .navigationTitle(viewModel.multiMediaType.rawValue.capitalized)
             .refreshable(action: {
                 viewModel.reloadView()
             })
@@ -81,40 +82,98 @@ struct ShimmerView: View {
 struct TitleView :View {
     @ObservedObject var viewModel : ViewModel
     var body: some View {
+        if viewModel.multiMediaType == .movies || viewModel.multiMediaType == .tvSeries{
+            movieTvView(viewModel: viewModel)
+        }else{
+            regionView()
+        }
+    }
+    
+
+    
+    struct movieTvView:View {
+        @ObservedObject var viewModel : ViewModel
+        @State var image = ""
+        var body: some View {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    ForEach(viewModel.multiMediaType == .movies ? viewModel.movies : viewModel.tvSeries, id: \.id) { title in
+                        NavigationLink(destination: DetailsView(titleId: title.id)) {
+                            ZStack{
+                                VStack {
+                                    Text(title.title)
+                                        .font(.headline)
+                                    Text("\(title.year.description)")
+                                        .font(.subheadline)
+                                }
+                            }
+                            .onAppear{
+                                let lastItemId = viewModel.multiMediaType == .movies ? viewModel.movies.last?.id : viewModel.tvSeries.last?.id
+                                if(title.id == lastItemId){
+                                    guard !viewModel.isLoading else { return }
+                                    if(viewModel.multiMediaType == .movies){
+                                        viewModel.moviePage += 1
+                                    }else{
+                                        viewModel.tvPage += 1
+                                    }
+                                    viewModel.fetchMoviesAndTvSeries()
+                                }
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 100) // Ensures equal width & height
+                            .background(Color.white) // Add background for visibility
+                            .cornerRadius(15)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .stroke(Color.black, lineWidth: 2)
+                            )
+                        }
+                    }
+                }
+                .padding()
+            }
+        }
+        func fetchimage(id:String){
+            
+        }
+    }
+    
+    private func regionView() -> some View{
         ScrollView {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                ForEach(viewModel.isMovies ? viewModel.movies : viewModel.tvSeries, id: \.id) { title in
-                    NavigationLink(destination: DetailsView(titleId: title.id)) {
-                        VStack {
-                            Text(title.title)
-                                .font(.headline)
-                            Text("\(title.year.description)")
-                                .font(.subheadline)
-                        }
-                        .onAppear{
-                            let lastItemId = viewModel.isMovies ? viewModel.movies.last?.id : viewModel.tvSeries.last?.id
-                            if(title.id == lastItemId){
-                                guard !viewModel.isLoading else { return }
-                                if(viewModel.isMovies){
-                                    viewModel.moviePage += 1
-                                }else{
-                                    viewModel.tvPage += 1
+                ForEach(viewModel.regions, id: \.self) { country in
+                    ZStack{
+                        RoundedRectangle(cornerRadius: 15)
+                            .overlay {
+                                AsyncImage(url: URL(string: country.flag)){image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(maxWidth: .infinity, maxHeight : .infinity)
+                                        .cornerRadius(15)
+                                }placeholder: {
+                                    ProgressView()
                                 }
-                                viewModel.fetchMoviesAndTvSeries()
                             }
+                            VStack {
+                                Text(country.name)
+                                    .font(.headline)
+                                Text("\(country.country)")
+                                    .font(.subheadline)
+                            }
+                            .frame(maxWidth : .infinity)
+                            .background(Color.white)
+
                         }
                         .frame(maxWidth: .infinity, minHeight: 100) // Ensures equal width & height
-                        .padding()
                         .background(Color.white) // Add background for visibility
                         .cornerRadius(15)
                         .overlay(
                             RoundedRectangle(cornerRadius: 15)
                                 .stroke(Color.black, lineWidth: 2)
-                        )
-                    }
-                }
+                        )                }
             }
             .padding()
         }
+
     }
 }
